@@ -1,6 +1,6 @@
 #include  <stdio.h>
 
-int main()
+int main(void)
 {
 	int n1, n2, product;
 
@@ -14,5 +14,5 @@ int main()
 
 	printf("The product of %d and %d is %d\n", n1, n2, product);
 
-	return(0);
+	return (0);
 }
