@@ -1,6 +1,5 @@
 #include  <stdio.h>
 
-int main(main)
 {
 	int n1, n2, product;
 
