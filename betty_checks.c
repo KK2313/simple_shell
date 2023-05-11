@@ -1,5 +1,15 @@
 #include  <stdio.h>
 
+/**
+ * main - Entry point of the program
+ *
+ * Description: This program evaluates the product
+ * 		of two integers
+ *
+ * Return: 0 success.
+ */
+
+int main(void)
 {
 	int n1, n2, product;
 
