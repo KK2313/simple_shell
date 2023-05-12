@@ -1,12 +1,13 @@
 #include  <stdio.h>
 
 /**
- * main - Entry point
- * @n1 - First Integer
- * @n2 - Second Integer
- * description - prduct of two integers
- * Return: Always 0 (Success)
-*/
+ * main - Entry point of the program
+ *
+ * Description: This program evaluates the product
+ * 		of two integers
+ *
+ * Return: 0 success.
+ */
 
 int main(void)
 {
