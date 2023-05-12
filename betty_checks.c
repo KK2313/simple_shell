@@ -1,5 +1,13 @@
 #include  <stdio.h>
 
+/**
+ * main - Entry point
+ * @n1 - First Integer
+ * @n2 - Second Integer
+ * description - prduct of two integers
+ * Return: Always 0 (Success)
+*/
+
 int main(void)
 {
 	int n1, n2, product;
