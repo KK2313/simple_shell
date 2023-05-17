@@ -10,10 +10,10 @@ int main(int ac, char **argv)
 	int no_tokens = 0;
 	char *token;
 	int j;
-
+	void execmd(char* argv[]);
+	
 	(void)ac;
-	(void)argv;
-
+	
 	while(1)
 	{
 	printf("%s", prompt);
@@ -55,8 +55,7 @@ int main(int ac, char **argv)
 	argv[j] = NULL;
 
 
-	printf("%s\n", lineptr);
-	
+	execmd(argv);	
 	free(lineptr);
 	n = 0;
 	lineptr = NULL;
