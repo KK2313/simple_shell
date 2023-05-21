@@ -1,17 +1,12 @@
 #ifndef OURSHELL_H
 #define OURSHELL_H
-#define BUFFER_SIZE 1024
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
+
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
+<<<<<<< HEAD
 
 /** Used Prototypes */
 int identify_program(data_of_program *data);
@@ -43,5 +38,9 @@ typedef struct builtins
 char *builtin;
 int (*function)(data_of_program *data);
 } builtins;
+=======
+void execmd(char **argv);
+char *get_location(char *command);
+>>>>>>> c319b385b41461630c93263a402f2fe7dba18e82
 
 #endif
