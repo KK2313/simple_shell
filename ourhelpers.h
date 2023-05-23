@@ -1,5 +1,8 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef OURHELPERS_H
+#define OURHELPERS_H
+
+/* Prompt to be printed */
+#define PROMPT_MSG "dali<3 " /* Needed to work with signal */
 
 /* Resume from the unused attibute */
 #define UNUSED __attribute__((unused))
