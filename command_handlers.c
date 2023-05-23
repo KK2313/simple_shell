@@ -1,4 +1,4 @@
-#include "main.h"
+#include "ourshell.h"
 
 /**
  * main - entry point
@@ -32,8 +32,8 @@ int main(int argc, char *argv[], char *env[])
  */
 void handle_ctrl_c(int opr UNUSED)
 {
-	_print("\n");
-	_print(PROMPT_MSG);
+	our_print("\n");
+	our_print(PROMPT_MSG);
 }
 
 /**
@@ -59,10 +59,10 @@ void process_data(data_of_program *data, int argc, char *argv[], char **env)
 		data->file_descriptor = open(argv[1], O_RDONLY);
 		if (data->file_descriptor == -1)
 		{
-			_printe(data->program_name);
-			_printe(": 0: Can't open ");
-			_printe(argv[1]);
-			_printe("\n");
+			our_printe(data->program_name);
+			our_printe(": 0: Can't open ");
+			our_printe(argv[1]);
+			our_printe("\n");
 			exit(127);
 		}
 	}
@@ -72,7 +72,7 @@ void process_data(data_of_program *data, int argc, char *argv[], char **env)
 	{
 		for (; env[i]; i++)
 		{
-			data->env[i] = str_dup(env[i]);
+			data->env[i] = string_duplicate(env[i]);
 		}
 	}
 	data->env[i] = NULL;
@@ -85,36 +85,36 @@ void process_data(data_of_program *data, int argc, char *argv[], char **env)
 	}
 }
 /**
- * prompter - show prompt
+ * prompt_sign - show prompt sign
  * @prompt: prompt
  * @data: ..
  */
-void prompter(char *prompt, data_of_program *data)
+void prompt_sign(char *prompt, data_of_program *data)
 {
-	int error_code = 0, string_len = 0;
+	int error_code = 0, string_length = 0;
 
 	while (++(data->exec_counter))
 	{
-		_print(prompt);
-		error_code = string_len = mygetline(data);
+		our_print(prompt);
+		error_code = string_length = our_getline(data);
 
 		if (error_code == EOF)
 		{
 			free_data(data);
 			exit(errno);
 		}
-		if (string_len >= 1)
+		if (string_length >= 1)
 		{
-			more_alias(data);
-			expand_variables(data);
+			remaining_alias(data);
+			exp_variables(data);
 			split_str(data);
 			if (data->tokens[0])
 			{
-				error_code = run_prog(data);
+				error_code = execute_prog(data);
 				if (error_code != 0)
-					_print_error(error_code, data);
+					our_print_error(error_code, data);
 			}
-			free_recurrent_data(data);
+			recurrent_data_free(data);
 		}
 	}
 }
