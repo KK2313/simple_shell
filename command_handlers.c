@@ -1,158 +1,121 @@
 #include "ourshell.h"
 
-
-#include "shell.h"
-
-void free_args(char **args, char **front);
-char *get_pid(void);
-char *get_env_value(char *beginning, int len);
-void variable_replacement(char **args, int *exe_ret);
-
 /**
- * free_args - Frees up memory taken by args.
- * @args: A null-terminated double pointer containing commands/arguments.
- * @front: A double pointer to the beginning of args.
+ * main - entry point
+ * @argc: arg count
+ * @argv: arg vec
+ * @env: values for env
+ * Return: 0
  */
-void free_args(char **args, char **front)
+int main(int argc, char *argv[], char *env[])
 {
-	size_t i;
+	data_of_program data_struct = {NULL}, *data = &data_struct;
+	char *prompt = "";
 
-	for (i = 0; args[i] || args[i + 1]; i++)
-		free(args[i]);
+	process_data(data, argc, argv, env);
 
-	free(front);
+	signal(SIGINT, handle_ctrl_c);
+
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && argc == 1)
+	{
+		errno = 2;
+		prompt = PROMPT_MSG;
+	}
+	errno = 0;
+	prompter(prompt, data);
+	return (0);
 }
 
 /**
- * get_pid - Gets the current process ID.
- * Description: Opens the stat file, a space-delimited file containing
- *              information about the current process. The PID is the
- *              first word in the file. The function reads the PID into
- *              a buffer and replace the space at the end with a \0 byte.
- *
- * Return: The current process ID or NULL on failure.
+ * handle_ctrl_c - ..
+ * @UNUSED: option of the prototype
  */
-char *get_pid(void)
+void handle_ctrl_c(int opr UNUSED)
 {
-	size_t i = 0;
-	char *buffer;
-	ssize_t file;
-
-	file = open("/proc/self/stat", O_RDONLY);
-	if (file == -1)
-	{
-		perror("Cant read file");
-		return (NULL);
-	}
-	buffer = malloc(120);
-	if (!buffer)
-	{
-		close(file);
-		return (NULL);
-	}
-	read(file, buffer, 120);
-	while (buffer[i] != ' ')
-		i++;
-	buffer[i] = '\0';
-
-	close(file);
-	return (buffer);
+	our_print("\n");
+	our_print(PROMPT_MSG);
 }
 
 /**
- * get_env_value - Gets the value corresponding to an environmental variable.
- * @beginning: The environmental variable to search for.
- * @len: The length of the environmental variable to search for.
- *
- * Return: If the variable is not found - an empty string.
- *         Otherwise - the value of the environmental variable.
- *
- * Description: Variables are stored in the format VARIABLE=VALUE.
+ * process_data - load data from structure
+ * @data: ..
+ * @argv: args
+ * @env: environ
+ * @argc: args count
  */
-char *get_env_value(char *beginning, int len)
+void process_data(data_of_program *data, int argc, char *argv[], char **env)
 {
-	char **var_addr;
-	char *replacement = NULL, *temp, *var;
+	int i = 0;
 
-	var = malloc(len + 1);
-	if (!var)
-		return (NULL);
-	var[0] = '\0';
-	_strncat(var, beginning, len);
+	data->program_name = argv[0];
+	data->input_line = NULL;
+	data->command_name = NULL;
+	data->exec_counter = 0;
 
-	var_addr = _getenv(var);
-	free(var);
-	if (var_addr)
+	if (argc == 1)
+		data->file_descriptor = STDIN_FILENO;
+	else
 	{
-		temp = *var_addr;
-		while (*temp != '=')
-			temp++;
-		temp++;
-		replacement = malloc(_strlen(temp) + 1);
-		if (replacement)
-			_strcpy(replacement, temp);
-	}
-
-	return (replacement);
-}
-
-/**
- * variable_replacement - Handles variable replacement.
- * @line: A double pointer containing the command and arguments.
- * @exe_ret: A pointer to the return value of the last executed command.
- *
- * Description: Replaces $$ with the current PID, $? with the return value
- *              of the last executed program, and envrionmental variables
- *              preceded by $ with their corresponding value.
- */
-void variable_replacement(char **line, int *exe_ret)
-{
-	int j, k = 0, len;
-	char *replacement = NULL, *old_line = NULL, *new_line;
-
-	old_line = *line;
-	for (j = 0; old_line[j]; j++)
-	{
-		if (old_line[j] == '$' && old_line[j + 1] &&
-				old_line[j + 1] != ' ')
+		data->file_descriptor = open(argv[1], O_RDONLY);
+		if (data->file_descriptor == -1)
 		{
-			if (old_line[j + 1] == '$')
+			our_printe(data->program_name);
+			our_printe(": 0: Can't open ");
+			our_printe(argv[1]);
+			our_printe("\n");
+			exit(127);
+		}
+	}
+	data->tokens = NULL;
+	data->env = malloc(sizeof(char *) * 50);
+	if (env)
+	{
+		for (; env[i]; i++)
+		{
+			data->env[i] = string_duplicate(env[i]);
+		}
+	}
+	data->env[i] = NULL;
+	env = data->env;
+
+	data->alias_list = malloc(sizeof(char *) * 20);
+	for (i = 0; i < 20; i++)
+	{
+		data->alias_list[i] = NULL;
+	}
+}
+/**
+ * prompt_sign - show prompt sign
+ * @prompt: prompt
+ * @data: ..
+ */
+void prompt_sign(char *prompt, data_of_program *data)
+{
+	int error_code = 0, string_length = 0;
+
+	while (++(data->exec_counter))
+	{
+		our_print(prompt);
+		error_code = string_length = our_getline(data);
+
+		if (error_code == EOF)
+		{
+			free_data(data);
+			exit(errno);
+		}
+		if (string_length >= 1)
+		{
+			remaining_alias(data);
+			exp_variables(data);
+			split_str(data);
+			if (data->tokens[0])
 			{
-				replacement = get_pid();
-				k = j + 2;
+				error_code = execute_prog(data);
+				if (error_code != 0)
+					our_print_error(error_code, data);
 			}
-			else if (old_line[j + 1] == '?')
-			{
-				replacement = _itoa(*exe_ret);
-				k = j + 2;
-			}
-			else if (old_line[j + 1])
-			{
-				/* extract the variable name to search for */
-				for (k = j + 1; old_line[k] &&
-						old_line[k] != '$' &&
-						old_line[k] != ' '; k++)
-					;
-				len = k - (j + 1);
-				replacement = get_env_value(&old_line[j + 1], len);
-			}
-			new_line = malloc(j + _strlen(replacement)
-					  + _strlen(&old_line[k]) + 1);
-			if (!line)
-				return;
-			new_line[0] = '\0';
-			_strncat(new_line, old_line, j);
-			if (replacement)
-			{
-				_strcat(new_line, replacement);
-				free(replacement);
-				replacement = NULL;
-			}
-			_strcat(new_line, &old_line[k]);
-			free(old_line);
-			*line = new_line;
-			old_line = new_line;
-			j = -1;
+			recurrent_data_free(data);
 		}
 	}
 }
+
