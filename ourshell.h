@@ -51,7 +51,8 @@ char *builtin;
 int (*function)(data_of_program *data);
 } builtins;
 
-/* prototypes */
+i/* prototypes */
+int _putchar(char c);
 int display_alias(data_of_program *data, char *alias);
 char *retrieve_alias(data_of_program *data, char *name);
 int put_alias(char *alias_string, data_of_program *data);
