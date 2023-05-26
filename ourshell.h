@@ -10,15 +10,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include <signal.h>
+#include <fcntl.h>
+
 #include "ourhelpers.h"
 
-char* get_location(char* command);
-void execmd(char **argv);
-	
-/**info - structure
+/**
+ * struct info - structure
  * @program_name: par 1
  * @input_line: par 2
  * @command_name: par 3
@@ -51,8 +49,7 @@ char *builtin;
 int (*function)(data_of_program *data);
 } builtins;
 
-i/* prototypes */
-int _putchar(char c);
+/* prototypes */
 int display_alias(data_of_program *data, char *alias);
 char *retrieve_alias(data_of_program *data, char *name);
 int put_alias(char *alias_string, data_of_program *data);
@@ -114,3 +111,4 @@ void process_data(data_of_program *data, int argc, char *argv[], char **env);
 void handle_ctrl_c(int opr UNUSED);
 
 #endif
+
