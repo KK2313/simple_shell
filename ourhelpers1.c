@@ -1,82 +1,54 @@
 #include "ourshell.h"
 
 /**
- * number_to_string - change num to str
- * @num: test par
- * @str: output
- * @base: type
+ * free_recurrent_data - function to keep the buffers clean
+ * @data: ..
  */
-void number_to_string(long num, char *str, int base)
+void free_recurrent_data(data_of_program *data)
 {
-	int index = 0, inNegative = 0;
-	long cociente = num;
-	char letters[] = {"0123456789abcdef"};
+	if (data->tokens)
+		free_pointers_array(data->tokens);
+	if (data->input_line)
+		free(data->input_line);
+	if (data->command_name)
+		free(data->command_name);
 
-	if (cociente == 0)
-		str[index++] = '0';
-
-	if (str[0] == '-')
-		inNegative = 1;
-
-	while (cociente)
-	{
-		if (cociente < 0)
-			str[index++] = letters[-(cociente % base)];
-		else
-			str[index++] = letters[cociente % base];
-		cociente /= base;
-	}
-	if (inNegative)
-		str[index++] = '-';
-
-	str[index] = '\0';
-	str_rev(str);
-}
-
-
-/**
- * string_to_integer - change str to num
- * @str: test par
- * Return: num
- */
-int string_to_integer(char *str);
-{
-	int sign = 1;
-	unsigned int number = 0;
-
-	while (!('0' <= *str && *str <= '9') && *str != '\0')
-	{
-		if (*str == '-')
-			sign *= -1;
-		if (*str == '+')
-			sign *= +1;
-		str++;
-	}
-
-	while ('0' <= *str && *str <= '9' && *str != '\0')
-	{
-
-		number = (number * 10) + (*str - '0');
-		str++;
-	}
-	return (number * sign);
+	data->input_line = NULL;
+	data->command_name = NULL;
+	data->tokens = NULL;
 }
 
 /**
- * character_count - count repetition
- * @str: test par
- * @chars: string with  chars
- * Return: int
+ * free_data - clean all data
+ * @data: ..
  */
-int character_count(char *str, char *chars)
+void free_data(data_of_program *data)
 {
-	int i = 0, counter = 0;
-
-	for (; str[i]; i++)
+	if (data->file_descriptor != 0)
 	{
-		if (str[i] == chars[0])
-			counter++;
+		if (close(data->file_descriptor))
+			perror(data->program_name);
 	}
-	return (counter);
+	free_recurrent_data(data);
+	free_pointers_array(data->env);
+	free_pointers_array(data->alias_list);
+}
+
+/**
+ * free_pointers_array - ..
+ * @myarray: array of pointers
+ */
+void free_pointers_array(char **myarray)
+{
+	int i;
+
+	if (myarray != NULL)
+	{
+		for (i = 0; myarray[i]; i++)
+			free(myarray[i]);
+
+		free(myarray);
+		myarray = NULL;
+	}
 }
 

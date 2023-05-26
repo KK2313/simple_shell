@@ -1,11 +1,11 @@
 #include "ourshell.h"
 
 /**
- * string_length - find len of str
+ * str_len - find len of str
  * @str: test par
  * Return: len
  */
-int string_length(char *str)
+int str_len(char *str)
 {
 	int length = 0;
 
@@ -19,11 +19,11 @@ int string_length(char *str)
 }
 
 /**
- * string_duplicate - exact copy of a str
+ * str_dup - exact copy of a str
  * @str: test par
  * Return: pointer to the array
  */
-char *string_duplicate(char *str)
+char *str_dup(char *str)
 {
 	char *result;
 	int length, i;
@@ -50,13 +50,13 @@ char *string_duplicate(char *str)
 }
 
 /**
- * string_compare - Compare two strings
+ * str_compare - Compare two strings
  * @str1: par 1
  * @str2: par 2
  * @number: par 3
  * Return: 1 or 0
  */
-int string_compare(char *str1, char *str2, int number)
+int str_compare(char *str1, char *str2, int number)
 {
 	int iterator;
 
@@ -89,12 +89,12 @@ int string_compare(char *str1, char *str2, int number)
 }
 
 /**
- * string_join - join 2 str
+ * str_join - join 2 str
  * @str1: par 1
  * @str2: par 2
  * Return: pointer to the string
  */
-char *string_join(char *str1, char *str2)
+char *str_join(char *str1, char *str2)
 {
 	char *result;
 	int length1 = 0, length2 = 0;
@@ -131,10 +131,10 @@ char *string_join(char *str1, char *str2)
 
 
 /**
- * string_reverse - reverses a string
+ * str_rev - reverses a string
  * @str: test par
  */
-void string_reverse(char *str)
+void str_rev(char *str)
 {
 
 	int i = 0, length = str_len(str) - 1;

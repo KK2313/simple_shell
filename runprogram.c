@@ -1,10 +1,10 @@
 #include "ourshell.h"
 /**
- * execute_prog - function run prog
+ * run_prog - function run prog
  * @data: program's data
  * Return: 0 or -1
  */
-int execute_prog(data_of_program *data)
+int run_prog(data_of_program *data)
 {
 	int retval = 0, status;
 	pid_t pidd;
