@@ -1,77 +1,77 @@
-#include "ourshell.h"
+#include "main.h"
 
 /**
- * our_print - function to output chars
+ * _print - function to output chars
  * @str: test par
  * Return: count int
  */
-int our_print(char *str)
+int _print(char *str)
 {
 	return (write(STDOUT_FILENO, str, str_len(str)));
 }
 /**
- * our_printe - Prints character arrays in stderr
+ * _printe - stderr
  * @str: test par
  * Return: count output
  */
-intour _printe(char *str)
+int _printe(char *str)
 {
 	return (write(STDERR_FILENO, str, str_len(str)));
 }
 
 /**
- *our _print_error - ..
+ * _print_error - ..
  * @data: program's data'
  * @errorcode: error code
  * Return: count ouput
  */
-int our_print_error(int errorcode, data_of_program *data)
+int _print_error(int errorcode, data_of_program *data)
 {
 	char n_as_string[10] = {'\0'};
 
-	number_to_string((long) data->exec_counter, n_as_string, 10);
+	num_to_str((long) data->exec_counter, n_as_string, 10);
 
 	if (errorcode == 2 || errorcode == 3)
 	{
-		our_printe(data->program_name);
-		our_printe(": ");
-		our_printe(n_as_string);
-		our_printe(": ");
-		our_printe(data->tokens[0]);
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->tokens[0]);
 		if (errorcode == 2)
-			our_printe(": Illegal number: ");
+			_printe(": Illegal number: ");
 		else
-			our_printe(": can't cd to ");
-		our_printe(data->tokens[1]);
-		our_printe("\n");
+			_printe(": can't cd to ");
+		_printe(data->tokens[1]);
+		_printe("\n");
 	}
 	else if (errorcode == 127)
 	{
-		our_printe(data->program_name);
-		our_printe(": ");
-		our_printe(n_as_string);
-		our_printe(": ");
-		our_printe(data->command_name);
-		our_printe(": not found\n");
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->command_name);
+		_printe(": not found\n");
 	}
 	else if (errorcode == 126)
 	{
-		our_printe(data->program_name);
-		our_printe(": ");
-		our_printe(n_as_string);
-		our_printe(": ");
-		our_printe(data->command_name);
-		our_printe(": Permission denied\n");
+		_printe(data->program_name);
+		_printe(": ");
+		_printe(n_as_string);
+		_printe(": ");
+		_printe(data->command_name);
+		_printe(": Permission denied\n");
 	}
 	return (0);
 }
 
 /**
-* our_getline - function to read input
+* mygetline - function to read input
 * @data: program's data
 * Return: count output
 */
-int our_getline(data_of_program *data)
+int mygetline(data_of_program *data)
 {
 	char buff[BUFFER_SIZE] = {'\0'};
 	static char *array_commands[10] = {NULL};
@@ -115,7 +115,7 @@ int our_getline(data_of_program *data)
 * @array_operators: logical operators
 * Return: index of the last command
 */
-int logical_operators(char *array_commands[], int i, char array_operators[])
+int check_logic_ops(char *array_commands[], int i, char array_operators[])
 {
 	char *temp = NULL;
 	int j;

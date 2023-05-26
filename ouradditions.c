@@ -1,33 +1,33 @@
 #include "ourshell.h"
 
 /**
- * exp_variables - ..
+ * expand_variables - ..
  * @data: pointer to the program's data
  */
-void exp_variables(data_of_program *data)
+void expand_variables(data_of_program *data)
 {
 	int i, j;
 	char line[BUFFER_SIZE] = {0}, expansion[BUFFER_SIZE] = {'\0'}, *temp;
 
 	if (data->input_line == NULL)
 		return;
-	add_string(line, data->input_line);
+	append_str(line, data->input_line);
 	for (i = 0; line[i]; i++)
 		if (line[i] == '#')
 			line[i--] = '\0';
 		else if (line[i] == '$' && line[i + 1] == '?')
 		{
 			line[i] = '\0';
-			number_to_string(errno, expansion, 10);
-			add_string(line, expansion);
-			add_string(line, data->input_line + i + 2);
+			num_to_str(errno, expansion, 10);
+			append_str(line, expansion);
+			append_str(line, data->input_line + i + 2);
 		}
 		else if (line[i] == '$' && line[i + 1] == '$')
 		{
 			line[i] = '\0';
-			number_to_string(getpid(), expansion, 10);
-			add_string(line, expansion);
-			add_string(line, data->input_line + i + 2);
+			num_to_str(getpid(), expansion, 10);
+			append_str(line, expansion);
+			append_str(line, data->input_line + i + 2);
 		}
 		else if (line[i] == '$' && (line[i + 1] == ' ' || line[i + 1] == '\0'))
 			continue;
@@ -37,14 +37,14 @@ void exp_variables(data_of_program *data)
 				expansion[j - 1] = line[i + j];
 			temp = get_env_var(expansion, data);
 			line[i] = '\0', expansion[0] = '\0';
-			add_string(expansion, line + i + j);
-			temp ? add_string(line, temp) : 1;
-			add_string(line, expansion);
+			append_str(expansion, line + i + j);
+			temp ? append_str(line, temp) : 1;
+			append_str(line, expansion);
 		}
-	if (!string_compare(data->input_line, line, 0))
+	if (!str_compare(data->input_line, line, 0))
 	{
 		free(data->input_line);
-		data->input_line = string_duplicate(line);
+		data->input_line = str_dup(line);
 	}
 }
 
@@ -52,7 +52,7 @@ void exp_variables(data_of_program *data)
  * more_alias - ..
  * @data: program's data
  */
-void other_aliases(data_of_program *data)
+void more_alias(data_of_program *data)
 {
 	int i, j, was_expanded = 0;
 	char line[BUFFER_SIZE] = {0}, expansion[BUFFER_SIZE] = {'\0'}, *temp;
@@ -60,7 +60,7 @@ void other_aliases(data_of_program *data)
 	if (data->input_line == NULL)
 		return;
 
-	add_string(line, data->input_line);
+	append_str(line, data->input_line);
 
 	for (i = 0; line[i]; i++)
 	{
@@ -72,11 +72,11 @@ void other_aliases(data_of_program *data)
 		if (temp)
 		{
 			expansion[0] = '\0';
-			add_string(expansion, line + i + j);
+			append_str(expansion, line + i + j);
 			line[i] = '\0';
-			add_string(line, temp);
+			append_str(line, temp);
 			line[str_len(line)] = '\0';
-			add_string(line, expansion);
+			append_str(line, expansion);
 			was_expanded = 1;
 		}
 		break;
@@ -84,21 +84,21 @@ void other_aliases(data_of_program *data)
 	if (was_expanded)
 	{
 		free(data->input_line);
-		data->input_line = string_duplicate(line);
+		data->input_line = str_dup(line);
 	}
 }
 
 /**
- * add_string - append string at end of the buffer
+ * append_str - append string at end of the buffer
  * @buffer: buffer
  * @str: value
  * Return: 0
  */
-int add_string(char *buffer, char *str)
+int append_str(char *buffer, char *str)
 {
 	int length, i;
 
-	length = string_length(buffer);
+	length = str_len(buffer);
 	for (i = 0; str[i]; i++)
 	{
 		buffer[length + i] = str[i];

@@ -1,10 +1,10 @@
 #include "ourshell.h"
 
 /**
- * recurrent_data_free - function to keep the buffers clean
+ * free_recurrent_data - function to keep the buffers clean
  * @data: ..
  */
-void recurrent_data_free(data_of_program *data)
+void free_recurrent_data(data_of_program *data)
 {
 	if (data->tokens)
 		free_pointers_array(data->tokens);
@@ -19,36 +19,36 @@ void recurrent_data_free(data_of_program *data)
 }
 
 /**
- * clean_data - free all data
+ * free_data - clean all data
  * @data: ..
  */
-void clean_data(data_of_program *data)
+void free_data(data_of_program *data)
 {
 	if (data->file_descriptor != 0)
 	{
 		if (close(data->file_descriptor))
 			perror(data->program_name);
 	}
-	recurrent_data_free(data);
-	free_array_pointers(data->env);
-	free_array_pointers(data->alias_list);
+	free_recurrent_data(data);
+	free_pointers_array(data->env);
+	free_pointers_array(data->alias_list);
 }
 
 /**
- * free_array_pointers - ..
+ * free_pointers_array - ..
  * @myarray: array of pointers
  */
-void free_array_pointers(char **myarrays)
+void free_pointers_array(char **myarray)
 {
 	int i;
 
-	if (myarrays != NULL)
+	if (myarray != NULL)
 	{
-		for (i = 0; myarrays[i]; i++)
-			free(myarrays[i]);
+		for (i = 0; myarray[i]; i++)
+			free(myarray[i]);
 
-		free(myarrays);
-		myarrays = NULL;
+		free(myarray);
+		myarray = NULL;
 	}
 }
 

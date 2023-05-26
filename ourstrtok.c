@@ -1,11 +1,11 @@
 #include "ourshell.h"
 /**
- *our _strtok - split str
+ * _strtok - split str
  * @line: command
  * @delimator: marker
  * Return: result
 */
-char our_strtok(char *line, char *delimator)
+char *_strtok(char *line, char *delimator)
 {
 	int j;
 	static char *str;
@@ -42,11 +42,11 @@ char our_strtok(char *line, char *delimator)
 }
 
 /**
- * string_split - ..
+ * split_str - ..
  * @data: the program's data
  * Return: different commands
  */
-void string_split(data_of_program *data)
+void split_str(data_of_program *data)
 {
 	char *delimiter = " \t";
 	int i, j, counter = 2, length;
