@@ -1,4 +1,4 @@
-#include "main.h"
+#include "ourshell.h"
 
 /**
  * display_alias - function to handle aliases
