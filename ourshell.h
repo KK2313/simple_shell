@@ -13,6 +13,8 @@
 #include <signal.h>
 #include <fcntl.h>
 
+#include "ourhelpers.h"
+
 /**
  * struct info - structure
  * @program_name: par 1
